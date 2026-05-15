@@ -1,87 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h>
-typedef struct player
-{
-    float hp;
-    float hurt;
-    int sp;
-    int def;
-    
-}player;
-
-typedef struct enemy
-{
-    float hp;
-    float hurt;
-    int sp;
-    int def;
-    
-}enemy;
-
-int Initgame(player *p1,enemy *e1){
-     *p1=(player){100,66,5,0};
-     *e1=(enemy){500,27,2,2};
-    return 1;
-}
-
-int GetHurt(int def,float *hp,float hurt)
-{if(def*5>hurt)
-    return 0;
-else     
-    {
-        *hp=*hp-hurt+def*5;
-        return 1;
-    }    
-}
-
-int Fight(int *sp,float *hurt)
-{
-    (*sp)--;
-    *hurt*=1.1;
-}
-
-int Rest(int *sp,int which)
-{if(which ==0)
-    *sp+=1;
-if(which ==1)
-    *sp+=2;
-}
-
-
-int dodge(player *p1,enemy *e1)
-{
-    int num=rand()%5+1;
- if(num>3){
-    p1->def+=3;
-    p1->sp-=1;
-    printf("闪避成功，防御+3，目前防御值为：\033[33m%d\033[0m\n",p1->def);
-    
-    if(e1->sp>0)            //应该做一个体力判断函数，将体力更改的内容集合起来
-        e1->sp-=1;
-    else
-        Rest(&e1->sp,0);    //这边存在一点问题，不够简洁
-    
-    return 1;
-    }
-else{if (e1->sp>0)
-        {Fight(&e1->sp,&e1->hurt);
-        GetHurt(p1->def,&p1->hp,e1->hurt);}
-    else
-        Rest(&e1->sp,0);
-       
-       p1->sp-=1;
-        return 0;
-} }
-
-
-
-
-
-
+#include "fun.h"
+#include<Windows.h>
 
 void main()
-{int input;
- int win;
+{SetConsoleOutputCP(65001);
+    int input;
+ int win=-1;
  player p1;
  enemy  e1;   
     printf("输入1开始游戏\n");
@@ -101,25 +25,28 @@ if(input==1)
                     if(p1.sp>=1)
                     {
                     GetHurt(e1.def,&e1.hp,p1.hurt);
-                    Fight(&p1.sp,&p1.hurt);
+                    p1.sp--;
                     }
                 
-                else{Rest(&p1.sp,1);}
+                    else{Rest(&p1.sp,1);}
                 
-                if(e1.sp>=1)
-                    {
-                    GetHurt(p1.def,&p1.hp,e1.hurt);
-                    Fight(&e1.sp,&e1.hurt);
+                
+                    if(e1.sp>0)
+                    {GetHurt(p1.def,&p1.hp,e1.hurt);
+                    e1.sp--;}
+
+                    else{Rest(&e1.sp,0);}
                     
-                    }
-                else{Rest(&e1.sp,0);}
+                    
+                
                 }
                 
                  
                 
             
             
-            if(input==2){
+            if(input==2)
+            {
                 if(p1.sp>=1)
                     {p1.def++;
                      printf("防御值+1，目前为\033[32m%d\033[0m\n",p1.def);
@@ -128,18 +55,29 @@ if(input==1)
                 else
                     Rest(&p1.sp,1);
                     
-                if(e1.sp>=1){
-                    GetHurt(p1.def,&p1.hp,e1.hurt*0.5);
-                    Fight(&e1.sp,&e1.hurt);
-                    }    
+                if(e1.sp>0)
+                    {GetHurt(p1.def,&p1.hp,e1.hurt*0.5);
+                    e1.sp--;}
+                        
                 else
                     Rest(&e1.sp,0);
-                        }
+            }
 
                 if (input==3)
-                    {if(p1.sp>0)
-                        {dodge(&p1,&e1);}
-                    else{Rest(&p1.sp,1);e1.sp-=1;}
+                    {   if(p1.sp>0)
+                            {if(dodge()){
+                                p1.def+=3;
+                                p1.sp-=1;
+                                printf("闪避成功，防御+3，目前防御值为：\033[33m%d\033[0m\n",p1.def);
+                                        }                     
+                            }
+                        else{Rest(&p1.sp,1);}
+                            
+                        if(p1.sp>0)    
+                        {GetHurt(p1.def,&p1.hp,e1.hurt);
+                            e1.sp-=1;}
+                        else
+                        {Rest(&e1.sp,0);}    
                     }
 
                 if(e1.hp<0)
@@ -151,16 +89,13 @@ if(input==1)
                   else if(p1.hp<0)
                     {
                     printf("\n--------------------\n");
-                    printf("真遗憾！你输了\n");
+                    printf("\033[31m真遗憾！你输了\033[0m\n");
                     printf("\n--------------------\n");
                     win=0;
                     break;
                     }
-                else
-                    {
-                     printf("敌人目前血量：\033[31m%.1f\033[0m\n",e1.hp);}
-                  
-                        
+                
+            printf("敌人目前血量：\033[31m%.1f\033[0m\n",e1.hp);
             printf("敌人体力:%d\n你的体力:%d\n",e1.sp,p1.sp);
 
             if(p1.hp<100){
