@@ -2,6 +2,8 @@
 #include "fun.h"
 #include<Windows.h>
 
+//下次的任务：写一个循环，问是否再来一局。
+
 void main()
 {SetConsoleOutputCP(65001);
     int input;
@@ -67,13 +69,14 @@ if(input==1)
                     {   if(p1.sp>0)
                             {if(dodge()){
                                 p1.def+=3;
-                                p1.sp-=1;
+                                
                                 printf("闪避成功，防御+3，目前防御值为：\033[33m%d\033[0m\n",p1.def);
-                                        }                     
+                                        } 
+                             p1.sp-=1;                               
                             }
                         else{Rest(&p1.sp,1);}
                             
-                        if(p1.sp>0)    
+                        if(e1.sp>0)    
                         {GetHurt(p1.def,&p1.hp,e1.hurt);
                             e1.sp-=1;}
                         else
