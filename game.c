@@ -2,7 +2,7 @@
 #include "fun.h"
 #include<Windows.h>
 
-//下次的任务：写一个循环，问是否再来一局。
+
 
 void main()
 {SetConsoleOutputCP(65001);
@@ -10,7 +10,8 @@ void main()
  int win=-1;
  player p1;
  enemy  e1;   
-    printf("输入1开始游戏\n");
+ while(input!=-1)
+   { printf("输入1开始游戏,输入-1结束游戏\n");
     scanf("%d",&input);
 if(input==1)
     {printf("\n--------------------\n");
@@ -107,7 +108,8 @@ if(input==1)
         }
     }
     if(win&&p1.hp>0)
-    printf("金币+%.1f",p1.hp*114);
+    printf("金币+%.1f\n",p1.hp*114);
 
 
+}
 }
